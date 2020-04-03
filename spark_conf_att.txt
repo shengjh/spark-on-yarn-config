@@ -1,0 +1,15 @@
+影响spark的一些配置因素：
+由于spark的不同启动方式的影响配置项是不同的，（local, standlone, yarn-client,yarn-master），这里举例yarn-client模式
+主要影响点在于内存(memory)和核(core)的分配
+1.yarn.nodemanager.resource.memory-mb控制每个主机上container使用的最大内存总和
+2.yarn.nodemanager.resource.cpu-vcores控制每个主机上container使用的最大内核总数
+3.spark.yarn.executor.memoryOverhead属性值将添加到executor内存中，以确定每个executor对YARN的完整内存请求,堆外内存
+4.yarn-client默认dirver 1core,1GB memory
+5.避免将100％的资源分配给YARN容器，因为主机需要一些资源来运行操作系统和Hadoop守护程序
+6.spark.executor.cores yarn模式默认为1
+7.spark.executor.memory/--executor-memory (X+max(384m,0.1X))
+8.yarn.scheduler.increment-allocation-mb yarn会在内存分配的时候进行向上舍入，这就是舍入的单位
+9.hdfs在线程过大时存在问题，尽量设置executor.core <=5
+10.AM占用一个executor
+11.spark.default.parallelism 对于没有父rdd的操作，默认的分区数
+12.--num-executors
